@@ -1,6 +1,6 @@
 # Cloud Lab Infrastructure
 
-Platform for running my personal applications / websites in kubernetes.
+Platform for running applications in kubernetes.
 
 ## Description
 
