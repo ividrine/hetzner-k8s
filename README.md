@@ -1,4 +1,4 @@
-# Cloud Lab Infrastructure
+# hetzner-k8s
 
 Platform for running applications in kubernetes.
 
