@@ -30,8 +30,9 @@ This project bootstraps kubernetes in Hetzner Cloud using Talos Linux. It create
 ## Getting Started
 
 - Clone the repository
+- Run `export HCLOUD_TOKEN=<tokenvalue>` to set env variable for packer.
 - Run `packer/create.sh` to generate a Talos Linux machine image.
-- Create a .tfvars file by running `cp example.tfvars .tfvars` and configure tokens / network CIDRs.
+- Create a .tfvars file by running `cp example.tfvars .tfvars` and configure values.
 - Run `terraform apply -var-file=.tfvars`
 - Once cluster is healthy and if your device is connected to the tailnet, you can run `tailscale configure kubeconfig tailscale-operator` to configure your local kubeconfig for connecting to cluster over tailscale DNS.
 
