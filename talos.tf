@@ -17,12 +17,15 @@ locals {
   inline_manifests = [
     local.hcloud_secret_manifest,
     local.hcloud_ccm_manifest,
-    local.gateway_api_manifest,
     local.cilium_manifest,
     local.tailscale_manifest
   ]
 
-  talos_manifests = ["https://raw.githubusercontent.com/siderolabs/talos-cloud-controller-manager/main/docs/deploy/cloud-controller-manager.yml"]
+  talos_manifests = [
+    "https://github.com/kubernetes-sigs/gateway-api/releases/download/${var.gateway_api_crd_version}/standard-install.yaml",
+    "https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/${var.gateway_api_crd_version}/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml",
+    "https://raw.githubusercontent.com/siderolabs/talos-cloud-controller-manager/main/docs/deploy/cloud-controller-manager.yml"
+  ]
 
   cluster_network = {
     dnsDomain      = local.cluster_domain
