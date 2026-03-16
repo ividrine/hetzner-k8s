@@ -15,11 +15,11 @@ control_plane = { location = "", server_type = "", count = 1 }
 worker_pools = {
   # Configure a pool of workers with specific options
   general = {
-    location    = ""
-    server_type = ""
-    count       = 1
-    labels      = { }
-    taints      = [ ]
+    location       = ""
+    server_type    = ""
+    count          = 1
+    labels         = {}
+    taints         = []
     firewall_rules = []
   }
 }

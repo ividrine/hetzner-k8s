@@ -8,8 +8,8 @@ variable "cluster_name" {
 # Secrets
 
 variable "hcloud_token" {
-  type      = string
-  sensitive = true
+  type        = string
+  sensitive   = true
   description = "Hetzner cloud API token."
 }
 
