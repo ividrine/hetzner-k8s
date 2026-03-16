@@ -14,13 +14,15 @@ locals {
     }
   ]
 
-  workers = [
-    for i in range(var.worker.count) : {
-      name        = "${var.cluster_name}-worker-${i}"
-      server_type = var.worker.server_type
-      location    = var.worker.location
-    }
-  ]
+  workers = flatten([
+    for pool_name, pool in var.worker_pools : [
+      for i in range(pool.count) : {
+        name        = "${var.cluster_name}-${pool_name}-${i}"
+        server_type = pool.server_type
+        location    = pool.location
+      }
+    ]
+  ])
 }
 
 resource "hcloud_server" "control_plane" {

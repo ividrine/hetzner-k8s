@@ -65,13 +65,18 @@ variable "control_plane" {
   })
 }
 
-variable "worker" {
-  type = object({
+variable "worker_pools" {
+
+  type = map(object({
     location    = string
     server_type = string
     count       = number
-  })
+    labels      = optional(map(string), {})
+    taints      = optional(list(string), [])
+  }))
 }
+
+
 
 # Talos
 # https://docs.siderolabs.com/talos/v1.11/configure-your-talos-cluster/system-configuration/editing-machine-configuration
