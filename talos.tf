@@ -18,6 +18,7 @@ locals {
     local.hcloud_secret_manifest,
     local.hcloud_ccm_manifest,
     local.cilium_manifest,
+    local.cert_manager_manifest,
     local.tailscale_manifest
   ]
 
