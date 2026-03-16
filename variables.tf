@@ -10,6 +10,7 @@ variable "cluster_name" {
 variable "hcloud_token" {
   type      = string
   sensitive = true
+  description = "Hetzner cloud API token."
 }
 
 variable "tailscale_api_key" {
@@ -20,6 +21,7 @@ variable "tailscale_api_key" {
 
 variable "tailscale_tailnet" {
   type        = string
+  sensitive   = true
   description = "The id of the Tailscale tailnet to use."
 }
 
@@ -27,35 +29,30 @@ variable "tailscale_tailnet" {
 
 variable "network_ipv4_cidr" {
   type        = string
-  default     = null
   description = "IPv4 CIDR for the main network"
 }
 
 variable "node_subnet_zone" {
   type        = string
-  default     = "eu-central"
   description = "Zone for the node subnet"
 }
 
 variable "node_subnet_ipv4_cidr" {
   type        = string
-  default     = null
   description = "IPv4 CIDR for the node subnet"
 }
 
 variable "pod_ipv4_cidr" {
   type        = string
-  default     = null
   description = "IPv4 CIDR for the pod network"
 }
 
 variable "service_ipv4_cidr" {
   type        = string
-  default     = null
   description = "IPv4 CIDR for the service network"
 }
 
-# Server
+# VMs
 
 variable "control_plane" {
   type = object({
@@ -66,17 +63,20 @@ variable "control_plane" {
 }
 
 variable "worker_pools" {
-
   type = map(object({
     location    = string
     server_type = string
     count       = number
     labels      = optional(map(string), {})
     taints      = optional(list(string), [])
+    firewall_rules = optional(list(object({
+      direction  = string
+      protocol   = string
+      port       = string
+      source_ips = list(string)
+    })), [])
   }))
 }
-
-
 
 # Talos
 # https://docs.siderolabs.com/talos/v1.11/configure-your-talos-cluster/system-configuration/editing-machine-configuration
@@ -99,7 +99,6 @@ variable "talos_ccm_version" {
   default = "v0.14.0"
 }
 
-
 variable "kubernetes_version" {
   type    = string
   default = "v1.34.2"
@@ -118,11 +117,6 @@ variable "cilium_version" {
 variable "hcloud_ccm_version" {
   type    = string
   default = "1.28.0"
-}
-
-variable "cert_manager_version" {
-  type    = string
-  default = "1.19.1"
 }
 
 variable "tailscale_operator_version" {
