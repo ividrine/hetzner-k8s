@@ -79,12 +79,11 @@ variable "worker_pools" {
 }
 
 # Talos
-# https://docs.siderolabs.com/talos/v1.11/configure-your-talos-cluster/system-configuration/editing-machine-configuration
 
 variable "talos_machine_configuration_apply_mode" {
   type        = string
   default     = "auto"
-  description = "Mode for applying Talos machine configurations"
+  description = "Mode for applying Talos machine configurations via talos provider"
 }
 
 # Software Versions
@@ -122,4 +121,9 @@ variable "hcloud_ccm_version" {
 variable "tailscale_operator_version" {
   type    = string
   default = "1.90.9"
+}
+
+variable "cert_manager_version" {
+  type    = string
+  default = "1.19.1"
 }
