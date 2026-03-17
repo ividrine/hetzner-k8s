@@ -1,16 +1,17 @@
-# Cloud Lab Infrastructure
+# hetzner-k8s
 
-Platform for running my personal applications / websites in kubernetes.
+Platform for self managing kubernetes using Hetzner Cloud VMs.
 
 ## Description
 
 This project bootstraps kubernetes in Hetzner Cloud using Talos Linux. It creates Tailscale tags and ACLs needed for secure access to kube API server from devices on the tailnet. It also installs a number of different components on the cluster:
 
-- [Gateway API](https://gateway-api.sigs.k8s.io/) CRDs (Custom Resource Definition)
-- [Cilium](https://cilium.io/) - CNI (Container Network Interface) and Gateway API Controller
-- [Tailscale Operator](https://tailscale.com/kb/1236/kubernetes-operator) - expose kube api server on the tailnet
-- [HCloud CCM (Cloud Controller Manager)](https://github.com/hetznercloud/hcloud-cloud-controller-manager) - native routing with cilium
-- [Talos CCM (Cloud Controller Manager)](https://github.com/siderolabs/talos-cloud-controller-manager) - automatic CSR approval
+- [Gateway API](https://gateway-api.sigs.k8s.io/)
+- [Cilium](https://cilium.io/)
+- [cert-manager](https://cert-manager.io/)
+- [Tailscale Operator](https://tailscale.com/kb/1236/kubernetes-operator)
+- [HCloud CCM (Cloud Controller Manager)](https://github.com/hetznercloud/hcloud-cloud-controller-manager)
+- [Talos CCM (Cloud Controller Manager)](https://github.com/siderolabs/talos-cloud-controller-manager)
 
 ## Prerequisites
 
@@ -18,7 +19,6 @@ This project bootstraps kubernetes in Hetzner Cloud using Talos Linux. It create
 
 - [Hetzner](https://www.hetzner.com/cloud)
 - [Tailscale](https://tailscale.com/)
-- [HCP Terraform](https://app.terraform.io/public/signup/account?utm_source=learn&product_intent=terraform) (optional)
 
 ### Dependencies
 
@@ -26,19 +26,61 @@ This project bootstraps kubernetes in Hetzner Cloud using Talos Linux. It create
 - [Terraform](https://developer.hashicorp.com/terraform)
 - [kubectl](https://kubernetes.io/docs/tasks/tools/)
 - [Tailscale CLI](https://tailscale.com/kb/1080/cli)
+- Optionally you can install [Flux CLI](https://fluxcd.io/flux/cmd/) to add gitops to the cluster after creation.
 
 ## Getting Started
 
-- Clone the repository
-- Run `export HCLOUD_TOKEN=<tokenvalue>` to set env variable for packer.
-- Run `packer/create.sh` to generate a Talos Linux machine image.
-- Create a .tfvars file by running `cp example.tfvars .tfvars` and configure values.
-- Run `terraform apply -var-file=.tfvars`
-- Once cluster is healthy and if your device is connected to the tailnet, you can run `tailscale configure kubeconfig tailscale-operator` to configure your local kubeconfig for connecting to cluster over tailscale DNS.
+1. Create a [Tailscale](https://tailscale.com/) account and add your device to the tailnet.
+2. Clone the repository.
+3. Set HCLOUD_TOKEN to your Hetzner cloud api token - ex. for bash: `export HCLOUD_TOKEN=<tokenvalue>`
+4. Run `packer/create.sh` to generate a Talos Linux machine image snapshot and upload to Hetzner cloud.
+5. Create a .tfvars file by running `cp example.tfvars .tfvars` and configure values.
+6. Run `terraform apply -var-file=.tfvars`
+7. Once cluster is healthy and if your device is connected to the tailnet, you can run `tailscale configure kubeconfig tailscale-operator` to configure your local kubeconfig for connecting to cluster over tailscale DNS.
 
-## HCP Terraform
+## Helpful Commands
 
-For storing/managing terraform state I am using [HCP Terraform](https://app.terraform.io/public/signup/account?utm_source=learn&product_intent=terraform) - which is free for personal use. In order to keep the network secure, I am running an [agent](https://developer.hashicorp.com/terraform/cloud-docs/agents) on a dedicated machine in my local network so that it is the only thing that can access the kube / talos api servers outside of my tailnet.
+### Apply/Destroy
+
+```
+terraform apply -var-file=.tfvars
+terraform destroy -var-file=.tfvars
+```
+
+### Output configs
+
+```
+terraform output -raw kubeconfig > ~/.kube/config
+terraform output -raw talosconfig > ~/.talos/config
+```
+
+### Configure kubeconfig with tailscale auth
+
+`tailscale configure kubeconfig <device_name>`
+
+### Machine logs
+
+```
+talosctl -n <nodeIp> dmesg
+talosctl -n <nodeIp> dmesg | grep error
+```
+
+### Bootstrap flux
+
+```
+export GITHUB_TOKEN=<your_personal_access_token>
+export GITHUB_USER=<your_github_username>
+
+flux bootstrap github \
+ --token-auth=false \
+ --owner=$GITHUB_USER \
+ --repository=ops \
+ --branch=main \
+ --path=./clusters/production \
+ --read-write-key=true \
+ --components-extra='image-reflector-controller,image-automation-controller' \
+ --personal
+```
 
 ## License
 
