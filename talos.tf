@@ -25,7 +25,7 @@ locals {
   talos_manifests = [
     "https://github.com/kubernetes-sigs/gateway-api/releases/download/${var.gateway_api_crd_version}/standard-install.yaml",
     "https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/${var.gateway_api_crd_version}/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml",
-    "https://raw.githubusercontent.com/siderolabs/talos-cloud-controller-manager/main/docs/deploy/cloud-controller-manager.yml"
+    "https://raw.githubusercontent.com/siderolabs/talos-cloud-controller-manager/${var.talos_ccm_version}/docs/deploy/cloud-controller-manager.yml"
   ]
 
   cluster_network = {
@@ -131,9 +131,14 @@ locals {
   worker_config_patch = {
     for node in local.workers : node.name => {
       machine = {
-        kubelet  = local.kubelet
-        certSANs = local.certificate_san
-        features = { kubePrism = local.kubePrism }
+        kubelet = merge(local.kubelet, length(node.taints) > 0 ? {
+          extraConfig = {
+            registerWithTaints = node.taints
+          }
+        } : {})
+        certSANs   = local.certificate_san
+        nodeLabels = node.labels
+        features   = { kubePrism = local.kubePrism }
         network = {
           hostname         = node.name
           extraHostEntries = local.extra_host_entries

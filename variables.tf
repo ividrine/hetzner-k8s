@@ -68,7 +68,11 @@ variable "worker_pools" {
     server_type = string
     count       = number
     labels      = optional(map(string), {})
-    taints      = optional(list(string), [])
+    taints = optional(list(object({
+      key    = string
+      value  = string
+      effect = string
+    })), [])
     firewall_rules = optional(list(object({
       direction  = string
       protocol   = string
@@ -95,7 +99,7 @@ variable "talos_version" {
 
 variable "talos_ccm_version" {
   type    = string
-  default = "v0.14.0"
+  default = "v1.12.0"
 }
 
 variable "kubernetes_version" {

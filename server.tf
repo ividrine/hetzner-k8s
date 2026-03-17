@@ -21,6 +21,8 @@ locals {
         server_type = pool.server_type
         location    = pool.location
         pool_name   = pool_name
+        labels      = pool.labels
+        taints      = pool.taints
       }
     ]
   ])
