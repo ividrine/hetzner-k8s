@@ -23,23 +23,6 @@ resource "hcloud_firewall" "control_plane" {
     port       = "50000"
     source_ips = [local.source_ip]
   }
-  rule {
-    direction       = "out"
-    protocol        = "tcp"
-    port            = "any"
-    destination_ips = ["0.0.0.0/0", "::/0"]
-  }
-  rule {
-    direction       = "out"
-    protocol        = "udp"
-    port            = "any"
-    destination_ips = ["0.0.0.0/0", "::/0"]
-  }
-  rule {
-    direction       = "out"
-    protocol        = "icmp"
-    destination_ips = ["0.0.0.0/0", "::/0"]
-  }
 }
 
 # Workers will need Talos API port exposed in order to apply machine configurations during bootstrap
@@ -51,23 +34,6 @@ resource "hcloud_firewall" "worker" {
     protocol   = "tcp"
     port       = "50000"
     source_ips = [local.source_ip]
-  }
-  rule {
-    direction       = "out"
-    protocol        = "tcp"
-    port            = "any"
-    destination_ips = ["0.0.0.0/0", "::/0"]
-  }
-  rule {
-    direction       = "out"
-    protocol        = "udp"
-    port            = "any"
-    destination_ips = ["0.0.0.0/0", "::/0"]
-  }
-  rule {
-    direction       = "out"
-    protocol        = "icmp"
-    destination_ips = ["0.0.0.0/0", "::/0"]
   }
 }
 
