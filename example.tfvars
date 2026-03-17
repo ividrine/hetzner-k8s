@@ -1,3 +1,6 @@
+# Cluster
+cluster_name="cluster.local"
+
 # Secrets 
 hcloud_token      = "example-hcloud-token"
 tailscale_api_key = "example-tailscale-authkey"

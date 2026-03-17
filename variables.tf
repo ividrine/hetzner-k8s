@@ -2,7 +2,7 @@
 
 variable "cluster_name" {
   type    = string
-  default = "cloud-lab"
+  description = "Name of the kubernetes cluster"
 }
 
 # Secrets
@@ -10,19 +10,19 @@ variable "cluster_name" {
 variable "hcloud_token" {
   type        = string
   sensitive   = true
-  description = "Hetzner cloud API token."
+  description = "Hetzner cloud API token"
 }
 
 variable "tailscale_api_key" {
   type        = string
   sensitive   = true
-  description = "Used to create the necessary ACLs and OAuth client for tailscale operator."
+  description = "Used to create the necessary ACLs and OAuth client for tailscale operator"
 }
 
 variable "tailscale_tailnet" {
   type        = string
   sensitive   = true
-  description = "The id of the Tailscale tailnet to use."
+  description = "The id of the Tailscale tailnet to use"
 }
 
 # Network

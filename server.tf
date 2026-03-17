@@ -55,7 +55,10 @@ resource "hcloud_server" "worker" {
   image        = data.hcloud_image.x86.id
   server_type  = each.value.server_type
   location     = each.value.location
-  firewall_ids = contains(keys(hcloud_firewall.worker_pools), each.value.pool_name) ? [hcloud_firewall.worker_pools[each.value.pool_name].id] : []
+  firewall_ids = concat(
+    [hcloud_firewall.worker.id],
+    contains(keys(hcloud_firewall.worker_pools), each.value.pool_name) ? [hcloud_firewall.worker_pools[each.value.pool_name].id] : []
+  )
 
   network {
     network_id = hcloud_network.this.id
