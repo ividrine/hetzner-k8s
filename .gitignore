@@ -6,7 +6,7 @@
 !example.tfvars
 
 # Terraform State
-*.tfstate
+*.tfstate*
 *.tfstate.*backup
 
 # Saved plan files
