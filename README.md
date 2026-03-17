@@ -1,6 +1,6 @@
 # hetzner-k8s
 
-Platform for self managing kubernetes using Hetzner Cloud VMs.
+Platform for managing kubernetes using Hetzner Cloud VMs.
 
 ## Description
 
